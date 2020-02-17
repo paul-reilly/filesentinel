@@ -78,8 +78,22 @@ namespace filesentinel {
 #ifndef DOCTEST_CONFIG_DISABLE 
 #include "../doctest.h"
 
-TEST_CASE("Test") {
-    INFO("Output");
+TEST_CASE("Test detecting file change") {
+    using namespace filesentinel;
+    std::ofstream file;
+    file.open("test.txt");
+    file << "testing testing ";
+    file.close();
+    filesentinel::FileSentinel fs("test.txt");
+    fs.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    file.open("test.txt");
+    file << "1 2 3";
+    file.close();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    
+    CHECK(fs.getAndResetFileState() == kFileState::modified);
+    CHECK(fs.getAndResetFileState() == kFileState::unchanged);
 }
 
 #endif
