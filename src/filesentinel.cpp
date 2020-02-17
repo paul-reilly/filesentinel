@@ -64,6 +64,7 @@ namespace filesentinel {
         while (!*sp_terminate) {
             if (!fs::exists(path)) {
                 *sp_file_state = kFileState::does_not_exist;
+                continue;
             }
             if (last_write_time != fs::last_write_time(path)) {
                 last_write_time = fs::last_write_time(path);
