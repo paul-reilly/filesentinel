@@ -45,9 +45,10 @@ namespace filesentinel {
     auto FileSentinel::getAndResetFileState()
     -> const kFileState
     {
+        auto tmp = spm_file_state->load();
         if (*spm_file_state == kFileState::modified)
             *spm_file_state = kFileState::unchanged;
-        return spm_file_state->load();
+        return tmp;
     }
 
     // this thread potentially outlives the creating object
